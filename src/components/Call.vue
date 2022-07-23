@@ -44,6 +44,7 @@
               </template>
             </div>
           </div>
+          <picture-in-picture :participants="participants" />
         </template>
 
         <chat :sendMessage="sendMessage" :messages="messages" />
@@ -61,6 +62,7 @@ import VideoTile from "./VideoTile.vue";
 import ScreenshareTile from "./ScreenshareTile.vue";
 import Loading from "./Loading.vue";
 import PermissionsErrorMsg from "./PermissionsErrorMsg.vue";
+import PictureInPicture from "./PictureInPicture.vue";
 
 export default {
   name: "Call",
@@ -71,6 +73,7 @@ export default {
     ScreenshareTile,
     Loading,
     PermissionsErrorMsg,
+    PictureInPicture,
   },
   props: ["leaveCall", "name", "roomUrl"],
   data() {
@@ -115,7 +118,6 @@ export default {
     if (!this.callObject) return;
     // Clean-up event handlers
     this.callObject
-      .off("joining-meeting", this.handleJoiningMeeting)
       .off("joined-meeting", this.updateParticpants)
       .off("participant-joined", this.updateParticpants)
       .off("participant-updated", this.updateParticpants)

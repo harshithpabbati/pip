@@ -5,7 +5,7 @@
     </audio>
 
     <template v-if="participant.video">
-      <video autoPlay muted playsInline :srcObject="videoSource"></video>
+      <video autoPlay muted playsInline :srcObject.prop="videoSource"></video>
       <p class="participant-name">{{ username }}</p>
     </template>
 
