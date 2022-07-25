@@ -113,6 +113,23 @@ export default {
       .on("camera-error", this.handleDeviceError)
       // app-message handles receiving remote chat messages
       .on("app-message", this.updateMessages);
+
+    if (typeof navigator.mediaSession?.setActionHandler !== 'function') return;
+
+    const localUser = co.participants().local;
+    navigator.mediaSession.setActionHandler(
+      'togglemicrophone',
+      this.handleAudioClick,
+    );
+    navigator.mediaSession.setActionHandler(
+      'togglecamera',
+      this.handleVideoClick,
+    );
+    navigator.mediaSession.setActionHandler('hangup', this.leaveAndCleanUp);
+
+    // setting default states
+    navigator.mediaSession.setMicrophoneActive(!localUser?.audio);
+    navigator.mediaSession.setCameraActive(!localUser?.video);
   },
   unmounted() {
     if (!this.callObject) return;
@@ -169,11 +186,13 @@ export default {
     handleAudioClick() {
       const audioOn = this.callObject.localAudio();
       this.callObject.setLocalAudio(!audioOn);
+      navigator.mediaSession.setMicrophoneActive(!audioOn);
     },
     // Toggle local camera in use (on/off)
     handleVideoClick() {
       const videoOn = this.callObject.localVideo();
       this.callObject.setLocalVideo(!videoOn);
+      navigator.mediaSession.setCameraActive(!videoOn);
     },
     // Show permissions error in UI to alert local participant
     handleDeviceError() {
